@@ -799,14 +799,15 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
             if (filePath == null)
                 return;
 
-            var ext = Path.GetExtension(filePath);
-            ext = ext.ToLower();
-            if (String.Compare(ext, ".sdf", StringComparison.OrdinalIgnoreCase) != 0)
-                return;
+            var theDroppedFileVersionIsNotSupported = !IsFileVersionSupported(filePath);
+            if (theDroppedFileVersionIsNotSupported) return;
 
             dataSource = filePaths[0];
             AnalyzeDatabase();
         }
+
+        private static bool IsFileVersionSupported(string filePath) =>
+            VersionChecker.GetVersion(filePath) != SupportedVersions.Unsupported;
 
         public void ShrinkDatabase()
         {

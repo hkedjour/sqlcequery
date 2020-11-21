@@ -29,7 +29,7 @@ namespace ChristianHelle.DatabaseTools.SqlCe
         private static Type GetImplementation(string connectionString)
         {
             var file = new SqlConnectionStringBuilder(connectionString).DataSource;
-            var version = GetVersion(file);
+            var version = VersionChecker.GetVersion(file);
 
             return GetImplementation(version);
         }
@@ -83,7 +83,7 @@ namespace ChristianHelle.DatabaseTools.SqlCe
             string path;
             var assemblyFileVersion = "Unknown";
 
-            var supportedVersions = GetVersion(file);
+            var supportedVersions = VersionChecker.GetVersion(file);
             switch (supportedVersions)
             {
                 case SupportedVersions.SqlCe31:
@@ -106,25 +106,6 @@ namespace ChristianHelle.DatabaseTools.SqlCe
                 assemblyFileVersion = assemblyFileVersionAttribute.Version;
 
             return assemblyFileVersion;
-        }
-
-        private static SupportedVersions GetVersion(string file)
-        {
-            using (var fs = new FileStream(file, FileMode.Open))
-            {
-                fs.Seek(16, SeekOrigin.Begin);
-                var reader = new BinaryReader(fs);
-                var signature = reader.ReadInt32();
-
-                switch (signature)
-                {
-                    case 0x73616261: return SupportedVersions.SqlCe20;
-                    case 0x002dd714: return SupportedVersions.SqlCe31;
-                    case 0x00357b9d: return SupportedVersions.SqlCe35;
-                    case 0x003D0900: return SupportedVersions.SqlCe40;
-                    default: return SupportedVersions.Unsupported;
-                }
-            }
         }
     }
 
