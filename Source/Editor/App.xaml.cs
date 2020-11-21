@@ -1,4 +1,6 @@
 ﻿using System.Windows;
+using System.Windows.Interop;
+using System.Windows.Media;
 
 namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer
 {
@@ -9,6 +11,7 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer
     {
         public App()
         {
+            RenderOptions.ProcessRenderMode = RenderMode.SoftwareOnly;
             System.Windows.Forms.Application.EnableVisualStyles();
         }
     }
